@@ -1,0 +1,7 @@
+## Interface: 120000, 120001, 120005, 120007, 120100
+## Title: EUI Click Trace
+## Notes: Temporary passive click-casting diagnostics. /euict mark
+## Author: Local diagnostics
+## Version: 1.0.0
+## SavedVariables: EUIClickTraceDB
+EUIClickTrace.lua
