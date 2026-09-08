@@ -36,86 +36,40 @@
 </style>
 </head>
 <body>
-<main id="top">
-  <header>
-    <h1>Priest click-casting: instance checklist</h1>
-    <p class="muted">Enable logging, mark a failed click, then identify what restores casting.</p>
-    <p><strong>EUI Click Trace is a temporary addon written by Codex for this investigation.</strong> It is separate from official EllesmereUI. It records diagnostics without changing your spell bindings.</p>
-  </header>
-  <nav aria-label="Guide sections">
-    <a href="#enable">A. Enable</a><a href="#mark">B. Mark a problem</a><a href="#tests">C. Recovery tests</a><a href="#settings">D. Settings tests</a><a href="#finish">E. Save and report</a>
-  </nav>
-  <div class="notice"><p><strong>Keep the group alive first.</strong> Do not delay a needed heal to run a test. Use right-click <strong>Flash Heal</strong> consistently, stand still, keep the tank in range, and allow the cast/global cooldown to finish between attempts.</p></div>
-
-  <section id="enable" aria-labelledby="enable-title">
-    <h2 id="enable-title">A. Enable before entering the instance</h2>
-    <p>The addon files are already installed on this PC.</p>
-    <ol>
-      <li><strong>Fully quit and reopen WoW.</strong> A reload alone is not the activation step for this newly installed addon.</li>
-      <li>At character selection, open <strong>AddOns</strong> and check that <strong>EUI Click Trace</strong> is enabled for your priest. Log in.</li>
-      <li>Type <code>/euict status</code>. Expect <strong>ON</strong>, <strong>0 observer errors</strong>, and <strong>0 unavailable events</strong>. If it is OFF, type <code>/euict on</code>. If the command is unknown, recheck the addon and full restart.</li>
-      <li>Click-cast a normal heal, then run <code>/euict status</code> again. The recent-event count should increase. Report nonzero error/unavailable-event counts before relying on the log.</li>
-    </ol>
-    <p class="muted">Leave your tooltip and click-trigger settings unchanged for the first run.</p>
-    <a class="back" href="#top">Back to overview</a>
-  </section>
-
-  <section id="mark" aria-labelledby="mark-title">
-    <h2 id="mark-title">B. Mark a problem as soon as it is safe</h2>
-    <pre><code>/euict mark tank stuck</code></pre>
-    <p>Look for the confirmation: <strong>“Marked incident … Capturing 20 more seconds”</strong>. Then continue the recovery tests below.</p>
-    <p>A mark preserves up to <strong>60 seconds before</strong> and <strong>20 seconds after</strong> it. High event rates can shorten that window. The latest eight marked incidents are retained.</p>
-    <p><strong>Optional one-key marker:</strong> open <code>/macro</code>, create a macro named <strong>Mark click issue</strong>, paste the command above, and put it on an action-bar slot with a spare keyboard binding. It only marks the log and does not cast a spell.</p>
-    <p class="muted">Avoid repeated marks within 20 seconds: a new mark ends the previous mark’s following window. Different notes, such as <code>/euict mark buffs hidden</code>, help identify later tests. Typing in chat itself can affect focus; note if marking appears to restore casting.</p>
-    <a class="back" href="#top">Back to overview</a>
-  </section>
-
-  <section id="tests" aria-labelledby="tests-title">
-    <h2 id="tests-title">C. Recovery tests when the tank’s frame gets stuck</h2>
-    <p><strong>Stop as soon as it works and note the test number.</strong> Mark the failure first when safe. These tests are sequential; do not cast on another player until test 5.</p>
-    <div class="test"><span class="id">1</span><p><strong>Try an uncovered spot.</strong> Right-click another part of the same tank frame, away from defensive and debuff icons.</p></div>
-    <div class="test"><span class="id">2</span><p><strong>Leave and return.</strong> Move into empty screen space, return to the tank frame, and retry right-click Flash Heal.</p></div>
-    <div class="test"><span class="id">3</span><p><strong>Hover another player only.</strong> Move over another player’s frame <strong>without casting</strong>, return to the tank, and retry.</p></div>
-    <div class="test"><span class="id">4</span><p><strong>Cast normally on the tank.</strong> Select the tank as your target. With your cursor away from unit frames, cast Flash Heal from its normal action bar or keyboard binding, not a mouseover macro. Record whether it casts, then retry right-click on the tank frame.</p></div>
-    <div class="test"><span class="id">5</span><p><strong>Cast on another player.</strong> Click-cast Flash Heal on someone else, then return to the tank and retry.</p></div>
-    <div class="notice"><p><strong>For each failure, notice:</strong> any red error text; whether a cast bar starts; whether a spell-targeting cursor appears; and whether left-click also fails. Report the exact error if possible.</p></div>
-    <p class="muted">The marker’s following window is only 20 seconds. Do not rush these tests to fit it. If recovery takes longer, add a new labeled marker afterward, for example <code>/euict mark recovered test 5</code>, to preserve the recent events.</p>
-    <a class="back" href="#top">Back to overview</a>
-  </section>
-
-  <section id="settings" aria-labelledby="settings-title">
-    <h2 id="settings-title">D. Optional settings tests between pulls</h2>
-    <p><strong>Change one thing at a time, out of combat.</strong> Do the recovery tests first. Record approximately how many pulls you tried; one successful cast does not rule out an intermittent problem.</p>
-    <div class="test"><span class="id">6</span><p><strong>Hide buff tooltips.</strong> In EllesmereUI’s Raid Frames settings, use the cog beside <strong>Show Raid Frames Tooltip</strong> and set <strong>Buff Tooltips → Hidden</strong>. Keep defensive icons enabled. Use <strong>Hidden</strong>, not <strong>Hidden In Combat</strong>. Check whether failures recur, especially while centre defensive icons are visible.</p></div>
-    <div class="test"><span class="id">7</span><p><strong>Hide debuff tooltips.</strong> Restore buff tooltips to their original setting first. Hide debuff tooltips, including the <strong>Dispellable</strong> tile’s separate tooltip override. Check whether the issue recurs. Hiding only the normal unit tooltip does not hide aura tooltips.</p></div>
-    <div class="test"><span class="id">8</span><p><strong>Cast on mouse release.</strong> Restore tooltip settings first. In Click Casting, turn <strong>Trigger Bindings on Down → off</strong>. Check whether casting on release prevents the problem.</p></div>
-    <p>Mark any failure with the test number, for example <code>/euict mark test 6 failed</code>. Restore your original settings when you finish.</p>
-    <a class="back" href="#top">Back to overview</a>
-  </section>
-
-  <section id="finish" aria-labelledby="finish-title">
-    <h2 id="finish-title">E. Save the log and report back</h2>
-    <ol>
-      <li>After the incident’s 20-second following window, finish the run and use <code>/reload</code> or log out normally. <strong>This writes the log to disk.</strong> A crash can lose unsaved events.</li>
-      <li>Tell Codex the approximate time, spec, marker label, and what restored casting. The saved file can be inspected directly on this PC; no upload is needed.</li>
-      <li>Use <code>/euict off</code> when you no longer want to collect events. Existing evidence stays available.</li>
-    </ol>
-    <p>Copy this into your reply and fill in what you tested:</p>
-    <pre>Priest spec:
-Instance / tank class:
-Approximate incident time / marker label:
-Did marking itself restore casting?:
-Recovery test that worked: 1 / 2 / 3 / 4 / 5 / none
-Normal targeted Flash Heal: worked / failed / not tested
-Error text / cast bar / targeting cursor:
-6. Buff tooltips hidden: recurred / not seen over __ pulls / untested
-7. Debuff tooltips hidden: recurred / not seen over __ pulls / untested
-8. Cast on release: recurred / not seen over __ pulls / untested
-Log written with /reload or logout: yes / no</pre>
-    <p class="muted">WoW may withhold combat data. The logger records inaccessible fields explicitly, so the log can narrow the cause without necessarily proving every step of click delivery.</p>
-    <a class="back" href="#top">Back to overview</a>
-  </section>
-  <footer>Offline guide · No external scripts or tracking · Use Ctrl+P to print or save as PDF · Guide for EUI Click Trace 1.0.0</footer>
+<main>
+<h1>Click-casting checklist</h1>
+<small>EUI Click Trace is our temporary logger, not an official EllesmereUI addon.</small>
+<h2>Enable once</h2>
+<ol>
+<li><strong>Fully restart WoW</strong> and enable <strong>EUI Click Trace</strong> in AddOns.</li>
+<li><code>/euict status</code> should show <strong>ON</strong> and zero errors/unavailable events. If OFF: <code>/euict on</code>.</li>
+<li>Cast a heal and check status again: the event count should increase.</li>
+</ol>
+<h2>Mark a failure</h2>
+<pre><code>/euict mark tank stuck</code></pre>
+<p>Type this when safe, or put it in a macro on a spare key. It captures up to <strong>60 seconds before and 20 seconds after</strong>. Avoid repeat marks within 20 seconds.</p>
+<h2>Recovery tests</h2>
+<p><strong>Keep the group alive. Stop at the first success.</strong> Use right-click Flash Heal, stand still, stay in range, and wait for casts/global cooldowns.</p>
+<ol>
+<li>Click an <strong>uncovered spot</strong> on the tank frame.</li>
+<li>Move into <strong>empty space</strong>, return, and retry.</li>
+<li><strong>Hover another player without casting</strong>, return, and retry.</li>
+<li><strong>Target the tank</strong> and cast normal Flash Heal from the action bar, cursor away from frames. Then retry click-casting.</li>
+<li><strong>Click-cast on another player</strong>, return to the tank, and retry.</li>
+</ol>
+<p>Note the successful step, any <strong>red error or targeting cursor</strong>, and whether the cast bar starts. Note if marking itself fixes it.</p>
+<h2>Optional settings tests between pulls</h2>
+<p>Change <strong>one at a time</strong>, out of combat. Restore it before the next test.</p>
+<ol start="6">
+<li><strong>Buff Tooltips: Hidden</strong>, via the cog beside Show Raid Frames Tooltip. Keep defensive icons visible.</li>
+<li><strong>Hide debuff tooltips</strong>, including the Dispellable tile override.</li>
+<li><strong>Trigger Bindings on Down: off</strong> to cast on release.</li>
+</ol>
+<small>Use Hidden, not Hidden In Combat. Record failures and pulls tested. Restore your original settings afterward.</small>
+<h2>Save and report</h2>
+<p>After testing and the 20-second window, <strong><code>/reload</code> or log out normally</strong> to save the log.</p>
+<p>Tell me: <strong>spec, incident time, successful test number, errors, and settings tested</strong>. I can read the log on this PC.</p>
+<footer><code>/euict off</code> stops logging and keeps evidence. Ctrl+P to print.</footer>
 </main>
 </body>
 </html>
