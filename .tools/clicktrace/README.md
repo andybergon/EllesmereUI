@@ -5,6 +5,9 @@ The addon observes global mouse events and player spell events. It does not hook
 secure buttons, modify attributes, change bindings, inspect aura contents, or cast
 spells. `.tools` is excluded from the EllesmereUI release package.
 
+Open [the offline instance checklist](instance-checklist.html) for activation,
+incident marking, recovery tests, and the results template.
+
 ## Use in game
 
 1. Install the `EUIClickTrace` directory in Retail `Interface/AddOns`, then fully
