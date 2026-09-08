@@ -29,6 +29,12 @@
   .test p { margin:0; }
   .id { font-weight:750; color:var(--accent); }
   .back { display:inline-block; margin-top:12px; font-size:.88rem; }
+  .outcome { display:flex; flex-wrap:wrap; gap:8px 18px; border:0; padding:4px 0; margin:4px 0; }
+  .outcome legend { position:absolute; width:1px; height:1px; overflow:hidden; clip-path:inset(50%); }
+  .outcome label { display:flex; align-items:center; gap:7px; min-height:36px; cursor:pointer; }
+  .outcome input { width:18px; height:18px; accent-color:var(--accent); }
+  button { font:inherit; color:var(--ink); background:var(--soft); border:1px solid var(--line); border-radius:4px; padding:6px 12px; cursor:pointer; }
+  input:focus-visible, button:focus-visible { outline:3px solid var(--accent); outline-offset:3px; }
   footer { margin-top:28px; border-top:1px solid var(--line); padding-top:14px; font-size:.86rem; color:var(--muted); }
   @media (prefers-color-scheme:dark) { :root { --bg:#171c20; --paper:#20272b; --ink:#e3e9ed; --muted:#b2bec6; --line:#48565f; --accent:#9bd1bf; --soft:#293a35; } }
   @media (max-width:600px) { main { margin:0; padding:20px 18px; border:0; border-radius:0; } h1 { font-size:1.4rem; } }
@@ -48,15 +54,21 @@
 <h2>Mark a failure</h2>
 <pre><code>/euict mark tank stuck</code></pre>
 <p>Type this when safe, or put it in a macro on a spare key. It captures up to <strong>60 seconds before and 20 seconds after</strong>. Avoid repeat marks within 20 seconds.</p>
-<h2>Recovery tests</h2>
+<h2>C. Recovery tests</h2>
 <p><strong>Keep the group alive. Stop at the first success.</strong> Use right-click Flash Heal, stand still, stay in range, and wait for casts/global cooldowns.</p>
-<ol>
-<li>Click an <strong>uncovered spot</strong> on the tank frame.</li>
-<li>Move into <strong>empty space</strong>, return, and retry.</li>
-<li><strong>Hover another player without casting</strong>, return, and retry.</li>
-<li><strong>Target the tank</strong> and cast normal Flash Heal from the action bar, cursor away from frames. Then retry click-casting.</li>
-<li><strong>Click-cast on another player</strong>, return to the tank, and retry.</li>
+<ol id="recovery-tests">
+<li>Click an <strong>uncovered spot</strong> on the tank frame.
+<fieldset class="outcome" data-test="1"><legend>Test 1 result</legend><label><input type="checkbox" value="problem"> Still a problem</label><label><input type="checkbox" value="fixed"> Fixes it</label></fieldset></li>
+<li>Move into <strong>empty space</strong>, return, and retry.
+<fieldset class="outcome" data-test="2"><legend>Test 2 result</legend><label><input type="checkbox" value="problem"> Still a problem</label><label><input type="checkbox" value="fixed"> Fixes it</label></fieldset></li>
+<li><strong>Hover another player without casting</strong>, return, and retry.
+<fieldset class="outcome" data-test="3"><legend>Test 3 result</legend><label><input type="checkbox" value="problem"> Still a problem</label><label><input type="checkbox" value="fixed"> Fixes it</label></fieldset></li>
+<li><strong>Target the tank</strong> and cast normal Flash Heal from the action bar, cursor away from frames. Then retry click-casting.
+<fieldset class="outcome" data-test="4"><legend>Test 4 result</legend><label><input type="checkbox" value="problem"> Still a problem</label><label><input type="checkbox" value="fixed"> Fixes it</label></fieldset></li>
+<li><strong>Click-cast on another player</strong>, return to the tank, and retry.
+<fieldset class="outcome" data-test="5"><legend>Test 5 result</legend><label><input type="checkbox" value="problem"> Still a problem</label><label><input type="checkbox" value="fixed"> Fixes it</label></fieldset></li>
 </ol>
+<p><button type="button" id="clear-results">Clear results</button> <small id="save-status" role="status">Results stay in this browser, separate from the WoW log.</small></p>
 <p>Note the successful step, any <strong>red error or targeting cursor</strong>, and whether the cast bar starts. Note if marking itself fixes it.</p>
 <h2>Optional settings tests between pulls</h2>
 <p>Change <strong>one at a time</strong>, out of combat. Restore it before the next test.</p>
@@ -71,5 +83,46 @@
 <p>Tell me: <strong>spec, incident time, successful test number, errors, and settings tested</strong>. I can read the log on this PC.</p>
 <footer><code>/euict off</code> stops logging and keeps evidence. Ctrl+P to print.</footer>
 </main>
+<script>
+(() => {
+  const key = 'euict-recovery-results-v1';
+  const groups = [...document.querySelectorAll('.outcome')];
+  const status = document.getElementById('save-status');
+  let saved = {};
+  try {
+    const value = JSON.parse(localStorage.getItem(key) || '{}');
+    if (value && typeof value === 'object' && !Array.isArray(value)) saved = value;
+  } catch {
+    status.textContent = 'Browser storage unavailable. Keep this page open to retain results.';
+  }
+  function persist() {
+    const results = {};
+    groups.forEach(group => {
+      results[group.dataset.test] = group.querySelector('input:checked')?.value || '';
+    });
+    try {
+      localStorage.setItem(key, JSON.stringify(results));
+      status.textContent = 'Saved in this browser, separate from the WoW log.';
+    } catch {
+      status.textContent = 'Not saved. Keep this page open to retain results.';
+    }
+  }
+  groups.forEach(group => {
+    group.querySelectorAll('input').forEach(input => {
+      input.checked = saved[group.dataset.test] === input.value;
+      input.addEventListener('change', () => {
+        if (input.checked) group.querySelectorAll('input').forEach(other => {
+          if (other !== input) other.checked = false;
+        });
+        persist();
+      });
+    });
+  });
+  document.getElementById('clear-results').addEventListener('click', () => {
+    groups.forEach(group => group.querySelectorAll('input').forEach(input => { input.checked = false; }));
+    persist();
+  });
+})();
+</script>
 </body>
 </html>
