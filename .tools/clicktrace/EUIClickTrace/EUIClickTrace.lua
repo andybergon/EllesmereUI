@@ -188,7 +188,7 @@ end)
 frame:RegisterEvent("ADDON_LOADED")
 SLASH_EUICLICKTRACE1 = "/euict"
 SlashCmdList.EUICLICKTRACE = function(message)
-    if not db then return end
+    if not db or not session or not session.unavailableEvents then return end
     local command, label = message:match("^(%S*)%s*(.-)$")
     command = command:lower()
     if command == "mark" then

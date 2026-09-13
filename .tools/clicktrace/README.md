@@ -8,6 +8,9 @@ spells. `.tools` is excluded from the EllesmereUI release package.
 Open [the offline instance checklist](instance-checklist.html) for activation,
 incident marking, recovery tests, and the results template.
 
+See [investigation findings](findings.md) for captured incidents, the DBM change,
+and the limits of spell identification. Follow-up is tracked in [TODO.md](../../TODO.md).
+
 ## Use in game
 
 1. Install the `EUIClickTrace` directory in Retail `Interface/AddOns`, then fully
@@ -47,6 +50,11 @@ including the marker. High input rates may shorten the effective time window.
 A new marker ends the previous following window. Full incidents evict oldest
 first. No per-frame polling or combat-log stream is enabled.
 
+SavedVariables may occupy several megabytes because retained sessions and
+incidents serialize overlapping rows separately. A schema version change resets
+the database, including incidents and the enabled preference; preserve evidence
+before upgrading this diagnostic addon.
+
 Mouse rows include down/up button, modifiers, casting/channeling/targeting state,
 mouseover/target existence, friendly/dead/role state, Flash Heal usability/range,
 and up to three focus-frame ancestry chains of six entries each. Frame reads
@@ -61,6 +69,8 @@ lists rejected registrations. Nonzero counts require investigation before
 relying on missing events. Global mouse timestamps do not prove delivery to a
 secure button or macro execution, and absent spell events do not prove failure
 if the engine withholds them. A forbidden focus record may hide the overlay.
+Absent fields can mean an API returned nil or the field was not collected for
+that event; absence alone does not distinguish these cases.
 
 ## Validation and removal
 

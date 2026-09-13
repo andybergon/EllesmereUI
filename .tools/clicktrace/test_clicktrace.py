@@ -123,6 +123,16 @@ assert(#EUIClickTraceDB.incidents == 1)
 assert(EUIClickTraceDB.enabled == false)
 ''')
 
+    def test_slash_commands_after_incomplete_initialization(self):
+        self.check('''
+function GetBuildInfo() error("simulated initialization failure") end
+emit("ADDON_LOADED", "EUIClickTrace")
+assert(EUIClickTraceDB.current.observerErrors == 1)
+for _,command in ipairs({"status", "mark failure", "off", "on"}) do
+    assert(pcall(SlashCmdList.EUICLICKTRACE, command))
+end
+''')
+
     def test_forbidden_focus_and_observer_error_containment(self):
         self.check('''
 function focus:IsForbidden() return true end

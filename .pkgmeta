@@ -52,4 +52,5 @@ ignore:
   - CONTRIBUTING_TRANSLATIONS.md
   - EllesmereUILocales/_keys.txt
   - README.md
+  - TODO.md
   - CHANGELOG.md
